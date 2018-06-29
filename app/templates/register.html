@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "bootstrap/base.html" %}
+<html>
+	<head>
+		{% block head %}
+		{{ super() }}
+		<title>{{title}}</title>
+		<link rel="stylesheet" type="text/css" href={{ url_for("static", filename="common/css/base.css") }} />
+		{% endblock %}
+	</head>
+	{% block content %}
+	<div class="container-app">
+		<div class="container-header">Team Link</div>
+	    <div class="container-body" id="app">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Register</h3>
+				</div>
+				<div class="panel-body">
+    				{{ wtf.quick_form(form) }}
+				</div>
+				{{ utils.flashed_messages() }}
+				Click here to <a href="login">login</a>
+			</div>
+		</div>
+	</div>
+	{% endblock %}
+</html>
