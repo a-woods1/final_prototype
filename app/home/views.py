@@ -5,7 +5,7 @@ from flask_login import login_required
 from . import home
 
 @home.route('/')
-@login_required
+#@login_required
 def homepage():
     """
         Render the homepage template on the / route

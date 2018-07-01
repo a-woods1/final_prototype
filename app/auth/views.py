@@ -1,10 +1,12 @@
+#from http://www.gaudreault.ca/flask-react-website/
+
 from flask import flash, redirect, render_template, url_for
 from flask_login import login_required, login_user, logout_user
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Email, EqualTo
 from .. import db, login_manager
-from ..models import User
+from ..models import Person
 from . import auth
 
 class RegistrationForm(FlaskForm):
@@ -20,11 +22,11 @@ class RegistrationForm(FlaskForm):
   submit = SubmitField('Register')
                                                      
 def validate_email(self, field):
-  if User.query.filter_by(email=field.data).first():
+  if Person.query.filter_by(email=field.data).first():
     raise ValidationError('Email is already in use.')
 
 def validate_username(self, field):
-  if User.query.filter_by(username=field.data).first():
+  if Person.query.filter_by(username=field.data).first():
     raise ValidationError('Username is already in use.')
 
 class LoginForm(FlaskForm):
@@ -38,13 +40,13 @@ class LoginForm(FlaskForm):
 @login_manager.user_loader
 def load_user(id):
   #This is the how we locate the user in our testApp database
-  return User.query.get(int(id))
+  return Person.query.get(int(id))
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
   form = RegistrationForm()
   if form.validate_on_submit():
-    user = User(id=1, email=form.email.data, username=form.username.data, first_name=form.first_name.data, last_name=form.last_name.data, password=form.password.data)
+    user = Person(email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data, password=form.password.data)
     # add user to the database
     db.session.add(user)
     db.session.commit()
@@ -61,7 +63,7 @@ def login():
   if form.validate_on_submit():
     # check whether user exists in the database and whether
     # the password entered matches the password in the database
-    user = User.query.filter_by(email=form.email.data).first()
+    user = Person.query.filter_by(email=form.email.data).first()
     if user is not None and user.verify_password(form.password.data):
       # log user in
       login_user(user)
